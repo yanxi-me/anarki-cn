@@ -1,16 +1,16 @@
 ; News.  2 Sep 06.
 
-; to run news: (nsv), then go to http://localhost:8080
+; to run news: (nsv), then go to http://localhost:8180
 ; put usernames of admins, separated by whitespace, in arc/admins
 
 ; bug: somehow (+ votedir* nil) is getting evaluated.
 
 (declare 'atstrings t)
 
-(= this-site*    "My Forum"
-   site-url*     "http://news.yourdomain.com/"
-   parent-url*   "http://www.yourdomain.com"
-   favicon-url*  ""
+(= this-site*    "比特币文摘"
+   site-url*     "http://btc.yanxi.com/"
+   parent-url*   "http://btc.yanxi.com"
+   favicon-url*  "/bitcoin16x16.gif"
    site-desc*    "What this site is about."               ; for rss feed
    site-color*   (color 180 180 180)
    border-color* (color 180 180 180)
@@ -79,7 +79,7 @@
 
 (= initload-users* nil)
 
-(def nsv ((o port 8080))
+(def nsv ((o port 8180))
   (map ensure-dir (list arcdir* newsdir* storydir* votedir* profdir*))
   (unless stories* (load-items))
   (if (and initload-users* (empty profs*)) (load-users))
@@ -384,7 +384,7 @@
 
 ; Page Layout
 
-(= up-url* "grayarrow.gif" down-url* "graydown.gif" logo-url* "arc.png")
+(= up-url* "grayarrow.gif" down-url* "graydown.gif" logo-url* "bitcoin50x50.png")
 
 (defopr favicon.ico req favicon-url*)
 
@@ -403,7 +403,20 @@
        (center
          (tag (table border 0 cellpadding 0 cellspacing 0 width "85%"
                      bgcolor sand)
-           ,@body)))))
+           ,@body))
+       (pr "
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-100604-12', 'yanxi.com');
+  ga('send', 'pageview');
+
+</script>
+       ")
+       )))
 
 (= pagefns* nil)
 
@@ -426,8 +439,16 @@
                (color-stripe (main-color ,gu))
                (br)
                (center
-                 (hook 'longfoot)
+                 (longfoot)
                  (admin-bar ,gu (- (msec) ,gt) ,whence)))))))
+
+(def longfoot ()
+    (tag (a href "/bookmarklet") (pr "快速提交"))
+    (pr " | ")
+    (tag (a href "http://yanxi.com" target "_blank") (pr "第N个博客"))
+    (pr " | ")
+    (tag (a href "https://github.com/arclanguage/anarki/" target "_blank") (pr "源代码"))
+)
 
 (def admin-bar (user elapsed whence)
   (when (admin user)
@@ -450,7 +471,12 @@
 (mac minipage (label . body)
   `(npage (+ this-site* bar* ,label)
      (pagetop nil nil ,label)
-     (trtd ,@body)))
+     (trtd ,@body)
+     (trtd (vspace 10)
+           (color-stripe site-color*)
+           (br)
+           (center
+             (longfoot)))))
 
 (def msgpage (user msg (o title))
   (minipage (or title "Message")
@@ -590,24 +616,24 @@ function vote(node) {
 (def gen-logo ()
   (tag (td style "width:18px;padding-right:4px")
     (tag (a href parent-url*)
-      (tag (img src logo-url* width 18 height 18
+      (tag (img src logo-url* width 32 height 32
                 style "border:1px #@(hexrep border-color*) solid;")))))
 
-(= toplabels* '(nil "welcome" "new" "threads" "comments" "leaders" "*"))
+(= toplabels* '(nil "welcome" "最新" "我的评论" "最新评论" "模范用户" "*"))
 
 (= welcome-url* "welcome")
 
 (def toprow (user label)
   (w/bars
-    (when (noob user)
-      (toplink "welcome" welcome-url* label))
-    (toplink "new" "newest" label)
+;    (when (noob user)
+;      (toplink "welcome" welcome-url* label))
+    (toplink "最新" "newest" label)
     (when user
-      (toplink "threads" (threads-url user) label))
-    (toplink "comments" "newcomments" label)
-    (toplink "leaders"  "leaders"     label)
+      (toplink "我的评论" (threads-url user) label))
+    (toplink "最新评论" "newcomments" label)
+    (toplink "模范用户"  "leaders"     label)
     (hook 'toprow user label)
-    (link "submit")
+    (link "提交" "submit")
     (unless (mem label toplabels*)
       (fontcolor white (pr label)))))
 
@@ -851,7 +877,7 @@ function vote(node) {
 ; cached page.  If this were a prob, could make deletion clear caches.
 
 (newscache newestpage user 40
-  (listpage user (msec) (newstories user maxend*) "new" "New Links" "newest"))
+  (listpage user (msec) (newstories user maxend*) "最新" "最新" "newest"))
 
 (def newstories (user n)
   (retrieve n [cansee user _] stories*))
@@ -1016,7 +1042,8 @@ function vote(node) {
                      (or (live s) (author user s) (editor user))
                       url)
             rel  (unless (or toself (> (realscore s) follow-threshold*))
-                   'nofollow))
+                   'nofollow)
+            target "_blank")
       (pr s!title))))
 
 (def pdflink (url)
@@ -2168,7 +2195,7 @@ function vote(node) {
 (def threads-page (user subject)
   (if (profile subject)
     (withs (title (+ subject "'s comments")
-            label (if (is user subject) "threads" title)
+            label (if (is user subject) "我的评论" title)
             here  (threads-url subject))
       (longpage user (msec) nil label title here
         (awhen (keep [and (cansee user _) (~subcomment _)]
@@ -2258,7 +2285,7 @@ function vote(node) {
 (= nleaders* 20)
 
 (newscache leaderspage user 1000
-  (longpage user (msec) nil "leaders" "Leaders" "leaders"
+  (longpage user (msec) nil "模范用户" "模范用户" "leaders"
     (sptab
       (let i 0
         (each u (firstn nleaders* (leading-users))
@@ -2332,7 +2359,7 @@ function vote(node) {
 
 (newscache newcomments-page user 60
   (listpage user (msec) (visible user (firstn maxend* comments*))
-            "comments" "New Comments" "newcomments" nil))
+            "最新评论" "最新评论" "newcomments" nil))
 
 
 ; Doc
@@ -2612,4 +2639,13 @@ first asterisk isn't whitespace.
       (each c (dedup (map downcase (trues [uvar _ topcolor] (users))))
         (tr (td c) (tdcolor (hex>color c) (hspace 30)))))))
 
+
+(defop bookmarklet req
+  (minipage "快速提交"
+    (pr "将下面链接拖动到浏览器工具栏，在浏览感兴趣的网页时，点击工具栏的此链接即可完成提交。
+        <br/><br/>
+        <a style=\"color: #777; font-size: 2em;\" href=\"javascript:window.open('http://btc.yanxi.com/submitlink?u='+encodeURIComponent(document.location)+'&t='+encodeURIComponent(document.title))\">提交比特币文摘</a>
+    ")
+  )
+)
 

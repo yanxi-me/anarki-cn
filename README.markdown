@@ -1,3 +1,13 @@
+Based on: http://github.com/arclanguage/anarki
+
+Run the HN server:
+
+    $ ./arc.sh
+    arc> (load "lib/news.arc")
+    arc> (nsv)
+
+------------
+
 Anarki: a publicly modifiable 'wiki-like' fork of PG's and RTM's Arc Lisp (http://www.paulgraham.com/arc.html)
 
 The intention is to be extremely permissive in accepting patches. For commit

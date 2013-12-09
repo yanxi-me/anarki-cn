@@ -81,6 +81,7 @@
                 c))))
 
 (attribute a          href           opstring)
+(attribute a          target         opstring)
 (attribute a          rel            opstring)
 (attribute a          class          opstring)
 (attribute a          id             opsym)
