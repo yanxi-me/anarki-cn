@@ -1,9 +1,11 @@
-To run server, at the arc prompt:
+To run the server, at the arc prompt:
 
-  (load "lib/news.arc")
-  (nsv)
+```
+(load "lib/news.arc")
+(nsv)
+```
 
-   go to http://localhost:8081
+go to http://localhost:8081
 
 
 ------------
