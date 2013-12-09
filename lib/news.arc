@@ -447,7 +447,7 @@
     (pr " | ")
     (tag (a href "http://yanxi.com" target "_blank") (pr "第N个博客"))
     (pr " | ")
-    (tag (a href "https://github.com/arclanguage/anarki/" target "_blank") (pr "源代码"))
+    (tag (a href "https://github.com/yanxi-com/anarki-cn" target "_blank") (pr "源代码"))
 )
 
 (def admin-bar (user elapsed whence)
