@@ -1,8 +1,10 @@
-运行 anarki-cn:
+To run server, at the arc prompt:
 
-    $ ./arc.sh
-    arc> (load "lib/news.arc")
-    arc> (nsv)
+  (load "lib/news.arc")
+  (nsv)
+
+   go to http://localhost:8081
+
 
 ------------
 下面说明来自 https://github.com/arclanguage/anarki/blob/master/README.markdown
