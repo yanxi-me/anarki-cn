@@ -482,7 +482,7 @@
   (minipage (or title "Message")
     (spanclass admin
       (center (if (len> msg 80)
-                (widtable 500 msg)
+                (widtable 600 msg)
                 (pr msg))))
     (br2)))
 
@@ -2640,12 +2640,13 @@ first asterisk isn't whitespace.
         (tr (td c) (tdcolor (hex>color c) (hspace 30)))))))
 
 
+; Add by @yanxi
+
 (defop bookmarklet req
-  (minipage "快速提交"
-    (pr "将下面链接拖动到浏览器工具栏，在浏览感兴趣的网页时，点击工具栏的此链接即可完成提交。
-        <br/><br/>
-        <a style=\"color: #777; font-size: 2em;\" href=\"javascript:window.open('http://btc.yanxi.com/submitlink?u='+encodeURIComponent(document.location)+'&t='+encodeURIComponent(document.title))\">提交比特币文摘</a>
-    ")
-  )
-)
+  (msgpage (get-user req) bookmarkletdoc* "快速提交"))
+
+(= bookmarkletdoc*
+"将下面链接拖动到浏览器工具栏，在浏览感兴趣的网页时，点击工具栏的此链接即可完成提交。
+<br/><br/>
+<a style=\"color: #777; font-size: 2em;\" href=\"javascript:window.open('http://btc.yanxi.com/submitlink?u='+encodeURIComponent(document.location)+'&t='+encodeURIComponent(document.title))\">提交比特币文摘</a>")
 

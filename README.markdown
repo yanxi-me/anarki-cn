@@ -7,7 +7,7 @@ To run server, at the arc prompt:
 
 
 ------------
-下面说明来自 https://github.com/arclanguage/anarki/blob/master/README.markdown
+以下是原始 README
 
 Anarki: a publicly modifiable 'wiki-like' fork of PG's and RTM's Arc Lisp (http://www.paulgraham.com/arc.html)
 
